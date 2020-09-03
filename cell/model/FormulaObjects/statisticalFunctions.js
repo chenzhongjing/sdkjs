@@ -2235,6 +2235,9 @@ function (window, undefined) {
 				// B = R^(-1) * Q' * Y <=> B = R^(-1) * Z <=> R * B = Z
 				// result Z should have zeros for index>=K; if not, ignore values
 				for (var col = 0; col < K; col++) {
+					if (!pSlopes[col]) {
+						pSlopes[col] = [];
+					}
 					pSlopes[col][0] = pMatY[col][0];
 				}
 				lcl_SolveWithUpperRightTriangle(pMatX, aVecR, pSlopes, K, false);
@@ -7434,10 +7437,18 @@ function (window, undefined) {
 
 		if (res && res[0] && res[0][0]) {
 			var array = new cArray();
-			for(var i = 0; i < res.length; i++) {
+			var j;
+			if (res[0].length === 1) {
 				array.addRow();
-				for(var j = 0; j < res.length; j++) {
-					array.addElement(new cNumber(res[i][j]));
+				for(j = 0; j < res.length; j++) {
+					array.addElement(new cNumber(res[j][0]));
+				}
+			} else {
+				for(var i = 0; i < res.length; i++) {
+					array.addRow();
+					for(j = 0; j < res[i].length; j++) {
+						array.addElement(new cNumber(res[i][j]));
+					}
 				}
 			}
 			return array;
